@@ -9,7 +9,11 @@ const Command = require('../command.js');
 describe("Rover class", function() { 
   
   it('constructor sets position and default values for mode and generatorWatts', function() { // Test 7
+    let rover = new Rover(98382)
     expect(function() {new Rover();}).toThrow(new Error('Rover position required')); //I'm making a new rover without including a position
+    expect(rover.position).toEqual(98382)
+    expect(rover.generatorWatts).toEqual(110)
+    expect(rover.mode).toEqual('NORMAL')
   });
 
   it('response returned by receiveMessage contains the name of the message', function() { // Test 8
@@ -33,7 +37,7 @@ describe("Rover class", function() {
     let message = new Message('Check Rover status', commands);
     let rover = new Rover(98382);
     let response = rover.receiveMessage(message);
-    let roverDeets = {mode: (rover.mode), generatorWatts: (rover.generatorWatts), position: (rover.position)};
+    let roverDeets = {mode: 'NORMAL', generatorWatts: 110, position: 98382};
     expect(response.results[0].roverStatus).toEqual(roverDeets); // checking to make sure the rover responds with all info needed to status check command
   });
 
@@ -42,6 +46,7 @@ describe("Rover class", function() {
       let message = new Message('Changing to LOW_POWER', commands);
       let rover = new Rover(98382);
       let response = rover.receiveMessage(message);
+      expect(response.results[0]).toEqual({completed: true});
       expect(rover.mode).toEqual('LOW_POWER'); //sending a command to change mode to LOW POWER and making sure it actually changes
   });
 
@@ -58,6 +63,7 @@ describe("Rover class", function() {
       let message = new Message('Moving to position 1500', commands);
       let rover = new Rover(98382);
       let response = rover.receiveMessage(message);
+      expect(response.results[0]).toEqual({completed: true});
       expect(rover.position).toEqual(1500); //Making sure that Rover moves to position 1500 after command to do so
   });
 
